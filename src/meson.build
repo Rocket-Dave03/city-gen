@@ -1,3 +1,5 @@
 sources = files(
-  'main.c'
+  'main.c',
+  'mesh.c',
+  'file.c',
 )
