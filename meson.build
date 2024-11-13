@@ -9,6 +9,7 @@ deps = []
 deps += dependency('sdl2')
 deps += dependency('opengl')
 deps += dependency('glew')
+deps += dependency('cglm')
 
 
 
