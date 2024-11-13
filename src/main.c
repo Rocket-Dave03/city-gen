@@ -252,15 +252,9 @@ int main() {
 		SDL_GL_SwapWindow(window);
 	}
 quit:
-	if (vbo != 0) {
-		glDeleteBuffers(1, &vbo);
-	}
-	if (gl_context != NULL) {
-		SDL_GL_DeleteContext(gl_context);
-	}
-	if (window != NULL) {
-		SDL_DestroyWindow(window);
-	}
+	glDeleteBuffers(1, &vbo);
+	SDL_GL_DeleteContext(gl_context);
+	SDL_DestroyWindow(window);
 	SDL_Quit();
 	return exit_status;
 }

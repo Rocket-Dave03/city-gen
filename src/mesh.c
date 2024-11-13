@@ -7,10 +7,11 @@
 #include "file.h"
 
 void mesh_delete(struct Mesh *self) {
-	free(self->vertices);
-	free(self->indecies);
-
-	free(self);
+	if (self != NULL) {
+		free(self->vertices);
+		free(self->indecies);
+		free(self);
+	}
 }
 
 struct Mesh *mesh_create_empty(int vert_count, int index_count) {
