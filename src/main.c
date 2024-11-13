@@ -196,17 +196,11 @@ int main() {
 		goto quit;
 	}
 
-	struct Mesh *mesh = mesh_create_from_file("./test.obj");
-	// struct Mesh *mesh = mesh_create_empty(4, 2);
-	// float verts[] = {
-	// 	0.5f,  0.5f,  0.0f, // top right
-	// 	0.5f,  -0.5f, 0.0f, // bottom right
-	// 	-0.5f, -0.5f, 0.0f, // bottom left
-	// 	-0.5f, 0.5f,  0.0f	// top left
-	// };
-	// memcpy(mesh->vertices, verts, sizeof(float) * 3 * 4);
-	// unsigned int inds[] = {0, 1, 3, 1, 2, 3};
-	// memcpy(mesh->indecies, inds, sizeof(unsigned int) * 3 * 2);
+	struct Mesh *mesh = mesh_create_from_file("../test.obj");
+	if (mesh == NULL) {
+		fprintf(stderr, "Failed to load mesh\n");
+		goto quit;
+	}
 
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);

@@ -1,9 +1,8 @@
 #include "file.h"
 #include <errno.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
 
 unsigned long file_get_size(FILE *file) {
 	unsigned long pos = ftell(file);
@@ -12,7 +11,6 @@ unsigned long file_get_size(FILE *file) {
 	fseek(file, pos, SEEK_SET);
 	return size;
 }
-
 
 /**
  * Read one line from the FILE * into buf upto max bytes
@@ -24,15 +22,15 @@ bool file_read_line(FILE *file, char *buf, int max) {
 	}
 	int idx = 0;
 	memset(buf, 0, max);
-	while (idx < max-1) {
+	while (idx < max - 1) {
 		char cur;
 		int read_ret = fread(&cur, 1, 1, file);
 		// printf("read: %*s\n", 1, &cur);
 		if (read_ret == 0) {
 			if (feof(file)) {
 				return false;
-			} else if (ferror(file)){
-				fprintf(stderr,"Failed to read from file");
+			} else if (ferror(file)) {
+				fprintf(stderr, "Failed to read from file");
 				return false;
 			}
 		}
@@ -49,8 +47,8 @@ bool file_read_line(FILE *file, char *buf, int max) {
 char *file_read_all(const char *filepath) {
 	FILE *file = fopen(filepath, "r");
 	if (file == NULL) {
-		fprintf(stderr, "Failed to open file %s: %s",
-					 filepath, strerror(errno));
+		fprintf(stderr, "Failed to open file %s: %s", filepath,
+				strerror(errno));
 		return 0;
 	}
 	unsigned long size = file_get_size(file);

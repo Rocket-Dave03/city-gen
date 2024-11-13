@@ -18,20 +18,20 @@ struct Mesh *mesh_create_empty(int vert_count, int index_count) {
 	struct Mesh *self = malloc(sizeof(struct Mesh));
 
 	if (self == NULL) {
-		fprintf(stderr,"Failed to allocate memory for Mesh"); 
+		fprintf(stderr, "Failed to allocate memory for Mesh");
 		return NULL;
 	}
 
 	self->vertices = malloc(3 * sizeof(float) * vert_count);
 	if (self->vertices == NULL) {
-		fprintf(stderr,"Failed to allocate memory for Mesh");
+		fprintf(stderr, "Failed to allocate memory for Mesh");
 		mesh_delete(self);
 		return NULL;
 	}
 
 	self->indecies = malloc(3 * sizeof(float) * index_count);
 	if (self->indecies == NULL) {
-		fprintf(stderr,"Failed to allocate memory for Mesh");
+		fprintf(stderr, "Failed to allocate memory for Mesh");
 		mesh_delete(self);
 		return NULL;
 	}
@@ -55,7 +55,7 @@ struct Mesh *mesh_create_from_file(const char *filepath) {
 		if (read_buf[0] == 'v') {
 			vert_count++;
 		} else if (read_buf[0] == 'f') {
-			index_count+=2;
+			index_count += 2;
 		}
 	}
 	struct Mesh *self = mesh_create_empty(vert_count, index_count);
@@ -74,37 +74,36 @@ struct Mesh *mesh_create_from_file(const char *filepath) {
 			float z;
 
 			sscanf(read_buf, "v %f %f %f", &x, &y, &z);
-			self->vertices[cur_vert_count * 3 + 0] = x/2;
-			self->vertices[cur_vert_count * 3 + 1] = y/2;
-			self->vertices[cur_vert_count * 3 + 2] = z/2;
+			self->vertices[cur_vert_count * 3 + 0] = x / 2.0;
+			self->vertices[cur_vert_count * 3 + 1] = y / 2.0;
+			self->vertices[cur_vert_count * 3 + 2] = z / 2.0;
 			cur_vert_count++;
 		} else if (read_buf[0] == 'f') {
 			if (read_buf[8] != 0) {
 				int a, b, c, d;
 				sscanf(read_buf, "f %u %u %u %u", &a, &b, &c, &d);
 				// Tri 1/2
-				self->indecies[cur_index_count * 3 + 0] = a-1;
-				self->indecies[cur_index_count * 3 + 1] = b-1;
-				self->indecies[cur_index_count * 3 + 2] = c-1;
+				self->indecies[cur_index_count * 3 + 0] = a - 1;
+				self->indecies[cur_index_count * 3 + 1] = b - 1;
+				self->indecies[cur_index_count * 3 + 2] = c - 1;
 				// Tri 2/2
-				self->indecies[cur_index_count * 3 + 3] = c-1;
-				self->indecies[cur_index_count * 3 + 4] = d-1;
-				self->indecies[cur_index_count * 3 + 5] = a-1;
-				cur_index_count+=2;
+				self->indecies[cur_index_count * 3 + 3] = c - 1;
+				self->indecies[cur_index_count * 3 + 4] = d - 1;
+				self->indecies[cur_index_count * 3 + 5] = a - 1;
+				cur_index_count += 2;
 			} else {
 				int a, b, c;
 				sscanf(read_buf, "f %u %u %u", &a, &b, &c);
-				self->indecies[cur_index_count * 3 + 0] = a-1;
-				self->indecies[cur_index_count * 3 + 1] = b-1;
-				self->indecies[cur_index_count * 3 + 2] = c-1;
-				cur_index_count+=1;
+				self->indecies[cur_index_count * 3 + 0] = a - 1;
+				self->indecies[cur_index_count * 3 + 1] = b - 1;
+				self->indecies[cur_index_count * 3 + 2] = c - 1;
+				cur_index_count += 1;
 			}
 		}
 	}
 
 	self->index_count = cur_index_count;
 	self->vertex_count = cur_vert_count;
-	
 
 	return self;
 }
