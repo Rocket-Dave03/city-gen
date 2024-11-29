@@ -15,6 +15,10 @@
 #include "SDL_video.h"
 
 #include "GL/glew.h"
+
+#include "cglm/cglm.h"
+
+#include "cglm/util.h"
 #include "mesh.h"
 
 #include <GL/gl.h>
@@ -27,6 +31,9 @@
 #define WINDOW_TITLE "City Generator"
 #define BACKGROUND_COLOR                                                       \
 	51.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f
+
+int WINDOW_WIDTH = 1920 / 2;
+int WINDOW_HEIGHT = 1080 / 2;
 
 GLuint load_and_compile_shader(const char *path, GLenum shader_type) {
 	GLuint shader;
@@ -142,6 +149,8 @@ GLuint create_shader_program(const char *vert_path, const char *frag_path) {
 
 void resize_window_event(int width, int height) {
 	glViewport(0, 0, width, height);
+	WINDOW_WIDTH = width;
+	WINDOW_HEIGHT = height;
 }
 
 void callback(GLenum source, GLenum type, GLuint id, GLenum severity,
@@ -196,7 +205,7 @@ int main() {
 		goto quit;
 	}
 
-	struct Mesh *mesh = mesh_create_from_file("../test.obj");
+	struct Mesh *mesh = mesh_create_from_file("../cube.obj");
 	if (mesh == NULL) {
 		fprintf(stderr, "Failed to load mesh\n");
 		goto quit;
@@ -219,7 +228,8 @@ int main() {
 
 	glUseProgram(shader_program);
 
-	// SDL_GL_SetSwapInterval(0);
+	float pos = 0.0f;
+	SDL_GL_SetSwapInterval(1);
 	bool running = true;
 	SDL_Event event;
 	while (running) {
@@ -230,16 +240,35 @@ int main() {
 			case SDL_WINDOWEVENT:
 				switch (event.window.event) {
 				case SDL_WINDOWEVENT_RESIZED:
+					fprintf(stderr, "resize (%dx%d)\n", event.window.data1,
+							event.window.data2);
 					resize_window_event(event.window.data1, event.window.data2);
 				}
 			default:
 				break;
 			}
 		}
-
 		glClearColor(BACKGROUND_COLOR);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		vec3 offset = {0.0, 0.0, 0.0};
+
+		pos += 0.1;
+		if (pos >= 360) {
+			pos -= 360.0;
+		}
+		mat4 trans = {};
+		glm_mat4_identity(trans);
+		glm_translate(trans, offset);
+		// glm_rotate_z(trans, glm_rad(pos), trans);
+		glm_rotate_x(trans, glm_rad(pos), trans);
+		float a = (float)WINDOW_WIDTH / WINDOW_HEIGHT;
+
 		glUseProgram(shader_program);
+		unsigned int transformLoc =
+			glGetUniformLocation(shader_program, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, (float *)trans);
+
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
